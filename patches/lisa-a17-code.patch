@@ -1,3 +1,15 @@
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index 1c4c1cf2c..40151663b 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -467,6 +467,7 @@ __primary_switched:
+ ENDPROC(__primary_switched)
+ 
+ 	.pushsection ".rodata", "a"
++	.balign 8
+ SYM_DATA_START(kimage_vaddr)
+ 	.quad		_text
+ SYM_DATA_END(kimage_vaddr)
 diff --git a/drivers/Kconfig b/drivers/Kconfig
 index fe50d5165..99f75a4bb 100644
 --- a/drivers/Kconfig
@@ -61,11 +73,15 @@ index 66f5da167..33dd6b651 100644
  		return -EFAULT;
  
 diff --git a/scripts/link-vmlinux.sh b/scripts/link-vmlinux.sh
-index 3f33809d8..d9b330091 100755
+index 3f33809d8..23156c4c9 100755
 --- a/scripts/link-vmlinux.sh
 +++ b/scripts/link-vmlinux.sh
-@@ -186,7 +186,13 @@ gen_btf()
- 	vmlinux_link ${1}
+@@ -183,10 +183,16 @@ gen_btf()
+ 		return 1
+ 	fi
+ 
+-	vmlinux_link ${1}
++	vmlinux_link ${1} || return 1
  
  	info "BTF" ${2}
 -	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} -J ${1}
@@ -75,7 +91,17 @@ index 3f33809d8..d9b330091 100755
 +	if [ "${pahole_ver}" -ge "124" ]; then
 +		btf_flags="${btf_flags} --skip_encoding_btf_enum64 --skip_encoding_btf_decl_tag --skip_encoding_btf_type_tag"
 +	fi
-+	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} ${btf_flags} -J ${1}
++	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} ${btf_flags} -J ${1} || return 1
  
  	# Create ${2} which contains just .BTF section but no symbols. Add
  	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
+@@ -194,7 +200,7 @@ gen_btf()
+ 	# be redefined in the linker script. Add 2>/dev/null to suppress GNU
+ 	# objcopy warnings: "empty loadable segment detected at ..."
+ 	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
+-		--strip-all ${1} ${2} 2>/dev/null
++		--strip-all ${1} ${2} 2>/dev/null || return 1
+ 	# Change e_type to ET_REL so that it can be used to link final vmlinux.
+ 	# GNU ld 2.35+ and lld do not allow an ET_EXEC input.
+ 	if [ -n "${CONFIG_CPU_BIG_ENDIAN}" ]; then
+

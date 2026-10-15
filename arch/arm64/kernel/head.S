@@ -467,6 +467,7 @@ __primary_switched:
 ENDPROC(__primary_switched)
 
 	.pushsection ".rodata", "a"
+	.balign 8
 SYM_DATA_START(kimage_vaddr)
 	.quad		_text
 SYM_DATA_END(kimage_vaddr)
@@ -996,3 +997,4 @@ __primary_switch:
 	adrp	x0, __PHYS_OFFSET
 	br	x8
 ENDPROC(__primary_switch)
+

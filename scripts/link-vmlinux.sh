@@ -183,7 +183,7 @@ gen_btf()
 		return 1
 	fi
 
-	vmlinux_link ${1}
+	vmlinux_link ${1} || return 1
 
 	info "BTF" ${2}
 	# This 5.4 kernel accepts BTF kinds up to DATASEC (15).
@@ -192,7 +192,7 @@ gen_btf()
 	if [ "${pahole_ver}" -ge "124" ]; then
 		btf_flags="${btf_flags} --skip_encoding_btf_enum64 --skip_encoding_btf_decl_tag --skip_encoding_btf_type_tag"
 	fi
-	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} ${btf_flags} -J ${1}
+	LLVM_OBJCOPY=${OBJCOPY} ${PAHOLE} ${btf_flags} -J ${1} || return 1
 
 	# Create ${2} which contains just .BTF section but no symbols. Add
 	# SHF_ALLOC because .BTF will be part of the vmlinux image. --strip-all
@@ -200,7 +200,7 @@ gen_btf()
 	# be redefined in the linker script. Add 2>/dev/null to suppress GNU
 	# objcopy warnings: "empty loadable segment detected at ..."
 	${OBJCOPY} --only-section=.BTF --set-section-flags .BTF=alloc,readonly \
-		--strip-all ${1} ${2} 2>/dev/null
+		--strip-all ${1} ${2} 2>/dev/null || return 1
 	# Change e_type to ET_REL so that it can be used to link final vmlinux.
 	# GNU ld 2.35+ and lld do not allow an ET_EXEC input.
 	if [ -n "${CONFIG_CPU_BIG_ENDIAN}" ]; then
@@ -484,3 +484,4 @@ if [ -n "${CONFIG_QCOM_RTIC}" ]; then
 		# failure does not cause kernel compilation to fail.
 	fi
 fi
+
