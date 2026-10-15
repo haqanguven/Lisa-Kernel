@@ -28,15 +28,20 @@ remote work. It then builds Image and matching modules. Until that import
 completes, this repository contains the pinned source reference, patch, config,
 and build tools rather than the complete source tree.
 
-On a Linux build host with clang/LLVM 14, GCC, binutils, flex, bison, libssl-dev,
+On a Linux build host with the pinned Proton clang/LLVM 13, GCC, binutils, flex, bison, libssl-dev,
 cpio, and pahole installed:
 
 ```sh
-CLANG_BIN=/usr/lib/llvm-14/bin ./build-lisa.sh
+CLANG_BIN=/path/to/proton-clang/bin ./build-lisa.sh
 ```
 
 BTF generation can require more than 8 GB of memory; provision sufficient RAM
 and swap. Outputs are under `out/lisa-a17/`.
+
+The Actions workflow fetches Proton clang commit
+`9fb011b183fe7e69b04b873ef6533b4b077e3c5e` from
+[kdrag0n/proton-clang](https://github.com/kdrag0n/proton-clang), matching the
+toolchain used for the local compilation.
 
 The workflow uploads Image, built modules, configuration, Module.symvers, and
 build logs as artifacts. It does not upload device backups or private logs,

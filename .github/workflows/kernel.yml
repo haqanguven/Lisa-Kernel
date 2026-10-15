@@ -1,0 +1,92 @@
+name: Lisa Android 17 experimental kernel
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+concurrency:
+  group: lisa-kernel-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-22.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Import pinned kernel source if needed
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ -f Makefile && -f init/Kconfig.gki ]]; then
+            echo 'Kernel source already imported'
+            exit 0
+          fi
+          upstream_dir=$(mktemp -d "$RUNNER_TEMP/lisa-upstream.XXXXXX")
+          git -C "$upstream_dir" init
+          git -C "$upstream_dir" remote add origin https://github.com/MirahSyakilla/android_kernel_xiaomi_lisa.git
+          git -C "$upstream_dir" fetch --depth=1 origin 240b4a2e8265ce2100024a4e94b596b35a2d6afe
+          git -C "$upstream_dir" checkout --detach FETCH_HEAD
+          git -C "$upstream_dir" apply "$GITHUB_WORKSPACE/patches/lisa-a17-code.patch"
+          mkdir -p "$upstream_dir/Documentation/lisa-a17"
+          for upstream_readme in README README.md; do
+            if [[ -f "$upstream_dir/$upstream_readme" ]]; then
+              cp "$upstream_dir/$upstream_readme" "$upstream_dir/Documentation/lisa-a17/upstream-$upstream_readme"
+            fi
+          done
+          # Keep project metadata and avoid importing unrelated upstream workflows.
+          tar -C "$upstream_dir" --exclude='./.git' --exclude='./.github' \
+            --exclude='./README' --exclude='./README.md' -cf - . | tar -C "$GITHUB_WORKSPACE" -xf -
+          gzip -dc configs/lisa_hyperos17.config.gz > arch/arm64/configs/lisa_hyperos17_defconfig
+          printf '\n/out/\n/kernel-build.log\n' >> .gitignore
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add .
+          git commit -m 'Import pinned Lisa kernel source and Android 17 compatibility changes'
+          git push origin HEAD:main
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc g++ make flex bison \
+            libssl-dev libelf-dev dwarves bc cpio binutils-aarch64-linux-gnu
+      - name: Fetch pinned Proton clang toolchain
+        shell: bash
+        run: |
+          set -euo pipefail
+          clang_dir=$(mktemp -d "$RUNNER_TEMP/lisa-clang.XXXXXX")
+          git -C "$clang_dir" init
+          git -C "$clang_dir" remote add origin https://github.com/kdrag0n/proton-clang.git
+          git -C "$clang_dir" fetch --depth=1 origin 9fb011b183fe7e69b04b873ef6533b4b077e3c5e
+          git -C "$clang_dir" checkout --detach FETCH_HEAD
+          echo "CLANG_BIN=$clang_dir/bin" >> "$GITHUB_ENV"
+      - name: Provision build swap
+        run: |
+          sudo fallocate -l 12G /mnt/lisa-build.swap
+          sudo chmod 600 /mnt/lisa-build.swap
+          sudo mkswap /mnt/lisa-build.swap
+          sudo swapon /mnt/lisa-build.swap
+          free -h
+      - name: Build kernel and audit candidate modules
+        shell: bash
+        run: |
+          set -o pipefail
+          chmod +x build-lisa.sh
+          JOBS=4 ./build-lisa.sh 2>&1 | tee kernel-build.log
+      - name: Upload build outputs and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lisa-a17-experimental-${{ github.run_number }}
+          path: |
+            out/lisa-a17/artifacts/Image
+            out/lisa-a17/artifacts/modules.tar.gz
+            out/lisa-a17/artifacts/kernel.config
+            out/lisa-a17/artifacts/Module.symvers
+            out/lisa-a17/artifacts/modules.builtin
+            out/lisa-a17/artifacts/modules.order
+            out/lisa-a17/artifacts/candidate-module-abi.json
+            out/lisa-a17/artifacts/SHA256SUMS
+            kernel-build.log
+          if-no-files-found: error
