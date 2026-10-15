@@ -20,8 +20,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if [[ -f Makefile && -f init/Kconfig.gki ]]; then
-            echo 'Kernel source already imported'
+          if [[ -f Makefile && -f Documentation/lisa-a17/source-import-v2 ]]; then
+            echo 'Complete tracked kernel source already imported'
             exit 0
           fi
           upstream_dir=$(mktemp -d "$RUNNER_TEMP/lisa-upstream.XXXXXX")
@@ -38,12 +38,25 @@ jobs:
           done
           # Keep project metadata and avoid importing unrelated upstream workflows.
           tar -C "$upstream_dir" --exclude='./.git' --exclude='./.github' \
-            --exclude='./README' --exclude='./README.md' -cf - . | tar -C "$GITHUB_WORKSPACE" -xf -
+            --exclude='./README' --exclude='./README.md' -cf - . | tar -C "$GITHUB_WORKSPACE" --skip-old-files -xf -
           gzip -dc configs/lisa_hyperos17.config.gz > arch/arm64/configs/lisa_hyperos17_defconfig
           printf '\n/out/\n/kernel-build.log\n' >> .gitignore
+          # Upstream tracks some files matched by its own ignore patterns.
+          # Force-add its tracked manifest, preserving existing file contents.
+          source_manifest=$(mktemp "$RUNNER_TEMP/lisa-source-manifest.XXXXXX")
+          while IFS= read -r -d '' source_path; do
+            case "$source_path" in README|README.md|.github/*) continue ;; esac
+            if [[ -e "$source_path" || -L "$source_path" ]]; then
+              printf '%s\0' "$source_path" >> "$source_manifest"
+            fi
+          done < <(git -C "$upstream_dir" ls-files -z)
+          git add -f --pathspec-from-file="$source_manifest" --pathspec-file-nul
+          mkdir -p Documentation/lisa-a17
+          printf '%s\n' '240b4a2e8265ce2100024a4e94b596b35a2d6afe' > Documentation/lisa-a17/source-import-v2
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add .
+          git add -f Documentation/lisa-a17/source-import-v2 arch/arm64/configs/lisa_hyperos17_defconfig
           git commit -q -m 'Import pinned Lisa kernel source and Android 17 compatibility changes'
           git push origin HEAD:main
       - name: Install build dependencies
