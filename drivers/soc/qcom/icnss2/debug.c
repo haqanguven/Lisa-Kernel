@@ -12,11 +12,6 @@
 #include "qmi.h"
 #include "power.h"
 
-void *icnss_ipc_log_context;
-void *icnss_ipc_log_long_context;
-void *icnss_ipc_log_smp2p_context;
-void *icnss_ipc_soc_wake_context;
-
 static ssize_t icnss_regwrite_write(struct file *fp,
 				    const char __user *user_buf,
 				    size_t count, loff_t *off)
@@ -893,3 +888,4 @@ void icnss_debug_deinit(void)
 		icnss_ipc_soc_wake_context = NULL;
 	}
 }
+

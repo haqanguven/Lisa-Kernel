@@ -129,6 +129,8 @@ jobs:
           name: lisa-a17-experimental-${{ github.run_number }}
           path: |
             out/lisa-a17/artifacts/Image
+            out/lisa-a17/artifacts/vmlinux.btf
+            out/lisa-a17/artifacts/btf-report.json
             out/lisa-a17/artifacts/modules.tar.gz
             out/lisa-a17/artifacts/kernel.config
             out/lisa-a17/artifacts/Module.symvers

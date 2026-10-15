@@ -51,6 +51,12 @@
 #include "power.h"
 #include "genl.h"
 
+/* Logging macros also reference these when CONFIG_DEBUG_FS is disabled. */
+void *icnss_ipc_log_context;
+void *icnss_ipc_log_long_context;
+void *icnss_ipc_log_smp2p_context;
+void *icnss_ipc_soc_wake_context;
+
 #define MAX_PROP_SIZE			32
 #define NUM_LOG_PAGES			10
 #define NUM_LOG_LONG_PAGES		4
@@ -4484,3 +4490,4 @@ module_exit(icnss_exit);
 
 MODULE_LICENSE("GPL v2");
 MODULE_DESCRIPTION("iWCN CORE platform driver");
+

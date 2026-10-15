@@ -73,6 +73,7 @@ static int btf_parse_hdr(struct btf *btf)
 {
 	const struct btf_header *hdr = btf->hdr;
 	__u32 meta_left;
+	__u32 i;
 
 	if (btf->data_size < sizeof(struct btf_header)) {
 		pr_debug("BTF header not found\n");
@@ -94,7 +95,14 @@ static int btf_parse_hdr(struct btf *btf)
 		return -ENOTSUP;
 	}
 
-	meta_left = btf->data_size - sizeof(*hdr);
+	if (hdr->hdr_len < sizeof(*hdr) || hdr->hdr_len > btf->data_size)
+		return -EINVAL;
+	/* Accept only zero-filled extensions, as the kernel BTF parser does. */
+	for (i = sizeof(*hdr); i < hdr->hdr_len; i++) {
+		if (((const __u8 *)hdr)[i])
+			return -ENOTSUP;
+	}
+	meta_left = btf->data_size - hdr->hdr_len;
 	if (!meta_left) {
 		pr_debug("BTF has no data\n");
 		return -EINVAL;
@@ -116,7 +124,7 @@ static int btf_parse_hdr(struct btf *btf)
 		return -EINVAL;
 	}
 
-	btf->nohdr_data = btf->hdr + 1;
+	btf->nohdr_data = (void *)btf->hdr + hdr->hdr_len;
 
 	return 0;
 }
@@ -2856,3 +2864,4 @@ static int btf_dedup_remap_types(struct btf_dedup *d)
 	}
 	return 0;
 }
+

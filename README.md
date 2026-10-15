@@ -38,6 +38,13 @@ BTF generation on memory-limited hosts. The workflow builds pahole 1.32, pinned
 to `fa725d687ce3a712ef296b46bc63ea57ef466014`, with its pinned libbpf submodule.
 Provision sufficient RAM and swap. Outputs are under `out/lisa-a17/`.
 
+The Linux v5.10 `resolve_btfids` host tool is included with an ELF-only parser
+adaptation and the duplicate-name counting fix from Linux v5.15. The host BTF
+reader accepts only zero-filled header extensions, and its BTF UAPI header is
+synchronized with this kernel. Unresolved BTF IDs remain fatal. The build also
+checks generated BTF type kinds and required kernel structures; these are
+structural checks, not a substitute for the runtime kernel verifier.
+
 The Actions workflow fetches Proton clang commit
 `9fb011b183fe7e69b04b873ef6533b4b077e3c5e` from
 [kdrag0n/proton-clang](https://github.com/kdrag0n/proton-clang), matching the

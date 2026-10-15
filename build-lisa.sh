@@ -23,9 +23,14 @@ ARGS=( -C "$ROOT" O="$OUTPUT" ARCH=arm64
     STRIP="$CLANG_BIN/llvm-strip" HOSTCC=gcc HOSTCXX=g++
     LLVM_IAS=1 CROSS_COMPILE=aarch64-linux-gnu- PAHOLE="${PAHOLE:-pahole}" )
 make "${ARGS[@]}" olddefconfig
+mkdir -p "$OUTPUT/tools/bpf/resolve_btfids"
+make -C "$ROOT/tools/bpf/resolve_btfids" \
+    OUTPUT="$OUTPUT/tools/bpf/resolve_btfids/" HOSTCC=gcc HOSTLD=ld HOSTAR=ar -j"$JOBS"
 make "${ARGS[@]}" -j"$JOBS" Image modules
 mkdir -p "$OUTPUT/artifacts/modules"
 cp "$OUTPUT/arch/arm64/boot/Image" "$OUTPUT/artifacts/Image"
+"$CLANG_BIN/llvm-objcopy" --dump-section .BTF="$OUTPUT/artifacts/vmlinux.btf" "$OUTPUT/vmlinux"
+python3 "$ROOT/tools/inspect-btf.py" "$OUTPUT/artifacts/vmlinux.btf" "$OUTPUT/artifacts/btf-report.json"
 cp "$OUTPUT/.config" "$OUTPUT/artifacts/kernel.config"
 cp "$OUTPUT/Module.symvers" "$OUTPUT/artifacts/Module.symvers"
 cp "$OUTPUT/modules.builtin" "$OUTPUT/artifacts/modules.builtin"
@@ -46,5 +51,6 @@ if result['modules_with_crc_mismatch_or_missing_export']:
 PY
 tar -C "$OUTPUT/artifacts" -czf "$OUTPUT/artifacts/modules.tar.gz" modules
 sha256sum "$OUTPUT/artifacts/Image" "$OUTPUT/artifacts/modules.tar.gz" \
+    "$OUTPUT/artifacts/vmlinux.btf" \
     > "$OUTPUT/artifacts/SHA256SUMS"
 
