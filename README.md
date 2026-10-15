@@ -22,21 +22,21 @@ This does not upgrade Linux and does not prove all ROM BPF objects will load.
 
 ## Build
 
-The Actions workflow imports the pinned full kernel source on the first run,
-applies the patch, and records it as a new commit without overwriting divergent
-remote work. It then builds Image and matching modules. Until that import
-completes, this repository contains the pinned source reference, patch, config,
-and build tools rather than the complete source tree.
+The full pinned kernel source is imported, including upstream tracked files
+matched by its own ignore rules. The Actions workflow builds Image and matching
+modules from this repository.
 
 On a Linux build host with the pinned Proton clang/LLVM 13, GCC, binutils, flex, bison, libssl-dev,
 cpio, and pahole installed:
 
 ```sh
-CLANG_BIN=/path/to/proton-clang/bin ./build-lisa.sh
+CLANG_BIN=/path/to/proton-clang/bin PAHOLE=/path/to/pahole-1.32 ./build-lisa.sh
 ```
 
-BTF generation can require more than 8 GB of memory; provision sufficient RAM
-and swap. Outputs are under `out/lisa-a17/`.
+BTF remains enabled. LTO is disabled to avoid large merged debug units during
+BTF generation on memory-limited hosts. The workflow builds pahole 1.32, pinned
+to `fa725d687ce3a712ef296b46bc63ea57ef466014`, with its pinned libbpf submodule.
+Provision sufficient RAM and swap. Outputs are under `out/lisa-a17/`.
 
 The Actions workflow fetches Proton clang commit
 `9fb011b183fe7e69b04b873ef6533b4b077e3c5e` from
@@ -55,3 +55,4 @@ Module.symvers; changing vermagic or disabling checks is not an ABI fix.
 
 The imported kernel source retains its original license files. Kernel changes
 are distributed under the applicable Linux kernel GPL-2.0 license.
+

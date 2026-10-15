@@ -11,7 +11,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-22.04
-    timeout-minutes: 90
+    timeout-minutes: 120
     steps:
       - name: Free temporary runner disk for kernel build
         run: |
@@ -72,7 +72,22 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc g++ make flex bison \
-            libssl-dev libelf-dev dwarves bc cpio binutils-aarch64-linux-gnu
+            libssl-dev libelf-dev libdw-dev zlib1g-dev cmake pkg-config \
+            bc cpio binutils-aarch64-linux-gnu
+      - name: Build pinned pahole 1.32
+        shell: bash
+        run: |
+          set -euo pipefail
+          pahole_dir=$(mktemp -d "$RUNNER_TEMP/lisa-pahole.XXXXXX")
+          git -C "$pahole_dir" init
+          git -C "$pahole_dir" remote add origin https://github.com/acmel/dwarves.git
+          git -C "$pahole_dir" fetch --depth=1 origin fa725d687ce3a712ef296b46bc63ea57ef466014
+          git -C "$pahole_dir" checkout --detach FETCH_HEAD
+          git -C "$pahole_dir" submodule update --init --recursive --depth=1
+          cmake -S "$pahole_dir" -B "$pahole_dir/build" -DCMAKE_BUILD_TYPE=Release
+          cmake --build "$pahole_dir/build" -j4
+          "$pahole_dir/build/pahole" --version
+          echo "PAHOLE=$pahole_dir/build/pahole" >> "$GITHUB_ENV"
       - name: Fetch pinned Proton clang toolchain
         shell: bash
         run: |

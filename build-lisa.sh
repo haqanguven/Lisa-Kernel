@@ -13,6 +13,9 @@ fi
 if [[ ! -f "$OUTPUT/.config" ]]; then
     gzip -dc "$ROOT/configs/lisa_hyperos17.config.gz" > "$OUTPUT/.config"
 fi
+# Keep BTF, but avoid LTO's large merged debug units on memory-limited hosts.
+"$ROOT/scripts/config" --file "$OUTPUT/.config" \
+    --disable LTO_CLANG --disable THINLTO --enable LTO_NONE
 ARGS=( -C "$ROOT" O="$OUTPUT" ARCH=arm64
     CC="$CLANG_BIN/clang" LD="$CLANG_BIN/ld.lld"
     AR="$CLANG_BIN/llvm-ar" NM="$CLANG_BIN/llvm-nm"
@@ -44,3 +47,4 @@ PY
 tar -C "$OUTPUT/artifacts" -czf "$OUTPUT/artifacts/modules.tar.gz" modules
 sha256sum "$OUTPUT/artifacts/Image" "$OUTPUT/artifacts/modules.tar.gz" \
     > "$OUTPUT/artifacts/SHA256SUMS"
+
