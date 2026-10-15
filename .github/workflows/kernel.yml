@@ -44,7 +44,7 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git add .
-          git commit -m 'Import pinned Lisa kernel source and Android 17 compatibility changes'
+          git commit -q -m 'Import pinned Lisa kernel source and Android 17 compatibility changes'
           git push origin HEAD:main
       - name: Install build dependencies
         run: |
@@ -62,11 +62,22 @@ jobs:
           git -C "$clang_dir" checkout --detach FETCH_HEAD
           echo "CLANG_BIN=$clang_dir/bin" >> "$GITHUB_ENV"
       - name: Provision build swap
+        shell: bash
         run: |
-          sudo fallocate -l 12G /mnt/lisa-build.swap
-          sudo chmod 600 /mnt/lisa-build.swap
-          sudo mkswap /mnt/lisa-build.swap
-          sudo swapon /mnt/lisa-build.swap
+          set -euo pipefail
+          df -h "$RUNNER_TEMP"
+          available_mb=$(df -Pm "$RUNNER_TEMP" | awk 'NR==2 {print $4}')
+          swap_mb=$((available_mb - 8192))
+          if ((swap_mb > 8192)); then swap_mb=8192; fi
+          if ((swap_mb < 2048)); then
+            echo 'Insufficient free disk space for swap and kernel build outputs' >&2
+            exit 1
+          fi
+          swap_path="$RUNNER_TEMP/lisa-build.swap"
+          sudo fallocate -l "${swap_mb}M" "$swap_path"
+          sudo chmod 600 "$swap_path"
+          sudo mkswap "$swap_path"
+          sudo swapon "$swap_path"
           free -h
       - name: Build kernel and audit candidate modules
         shell: bash
@@ -90,3 +101,4 @@ jobs:
             out/lisa-a17/artifacts/SHA256SUMS
             kernel-build.log
           if-no-files-found: error
+
