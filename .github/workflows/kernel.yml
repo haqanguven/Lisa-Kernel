@@ -13,6 +13,12 @@ jobs:
     runs-on: ubuntu-22.04
     timeout-minutes: 90
     steps:
+      - name: Free temporary runner disk for kernel build
+        run: |
+          df -h /
+          # Disposable hosted-runner SDKs are not needed for a kernel-only build.
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc
+          df -h /
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -59,6 +65,9 @@ jobs:
           git add -f Documentation/lisa-a17/source-import-v2 arch/arm64/configs/lisa_hyperos17_defconfig
           git commit -q -m 'Import pinned Lisa kernel source and Android 17 compatibility changes'
           git push origin HEAD:main
+          case "$upstream_dir" in
+            "$RUNNER_TEMP"/lisa-upstream.*) rm -rf -- "$upstream_dir" ;;
+          esac
       - name: Install build dependencies
         run: |
           sudo apt-get update
