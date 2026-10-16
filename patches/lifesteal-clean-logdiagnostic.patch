@@ -1,0 +1,144 @@
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index cc4184495..b35bd5377 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -471,6 +471,7 @@ __primary_switched:
+ ENDPROC(__primary_switched)
+ 
+ 	.pushsection ".rodata", "a"
++	.balign 8
+ SYM_DATA_START(kimage_vaddr)
+ 	.quad		_text - TEXT_OFFSET
+ SYM_DATA_END(kimage_vaddr)
+diff --git a/drivers/mtd/devices/block2mtd.c b/drivers/mtd/devices/block2mtd.c
+index 410a32168..00d6f1868 100644
+--- a/drivers/mtd/devices/block2mtd.c
++++ b/drivers/mtd/devices/block2mtd.c
+@@ -251,7 +251,16 @@ static struct block2mtd_dev *add_device(char *devname, int erase_size,
+ 			msleep(1000);
+ 		wait_for_device_probe();
+ 
+-		devt = name_to_dev_t(devname);
++		/* Android block nodes are below /dev/block before root mounts. */
++		if (!strncmp(devname, "/dev/block/", 11)) {
++			char boot_devname[80];
++
++			scnprintf(boot_devname, sizeof(boot_devname), "/dev/%s",
++				  devname + 11);
++			devt = name_to_dev_t(boot_devname);
++		} else {
++			devt = name_to_dev_t(devname);
++		}
+ 		if (!devt)
+ 			continue;
+ 		bdev = blkdev_get_by_dev(devt, mode, dev);
+diff --git a/drivers/mtd/mtdoops.c b/drivers/mtd/mtdoops.c
+index 774970bfc..8b943dd2c 100644
+--- a/drivers/mtd/mtdoops.c
++++ b/drivers/mtd/mtdoops.c
+@@ -2,7 +2,7 @@
+ /*
+  * MTD Oops/Panic logger
+  *
+- * Copyright © 2007 Nokia Corporation. All rights reserved.
++ * Copyright Ãƒâ€šÃ‚Â© 2007 Nokia Corporation. All rights reserved.
+  *
+  * Author: Richard Purdie <rpurdie@openedhand.com>
+  */
+@@ -20,7 +20,7 @@
+ #include <linux/kmsg_dump.h>
+ 
+ /* Maximum MTD partition size */
+-#define MTDOOPS_MAX_MTD_SIZE (8 * 1024 * 1024)
++#define MTDOOPS_MAX_MTD_SIZE (16 * 1024 * 1024)
+ 
+ #define MTDOOPS_KERNMSG_MAGIC 0x5d005d00
+ #define MTDOOPS_HEADER_SIZE   8
+@@ -288,6 +288,25 @@ static void mtdoops_do_dump(struct kmsg_dumper *dumper,
+ 	}
+ }
+ 
++/* Opt-in diagnostic snapshots; disabled for normal builds/boots. */
++static unsigned int boot_snapshot;
++module_param(boot_snapshot, uint, 0400);
++MODULE_PARM_DESC(boot_snapshot, "Take two boot log snapshots at this interval in seconds (0 disables)");
++static unsigned int boot_snapshot_count;
++static void mtdoops_boot_snapshot(struct work_struct *work);
++static DECLARE_DELAYED_WORK(boot_snapshot_work, mtdoops_boot_snapshot);
++
++static void mtdoops_boot_snapshot(struct work_struct *work)
++{
++	if (!oops_cxt.mtd)
++		return;
++	pr_notice("mtdoops: diagnostic boot snapshot %u\n", ++boot_snapshot_count);
++	kmsg_dump(KMSG_DUMP_OOPS);
++	if (boot_snapshot_count < 2)
++		schedule_delayed_work(&boot_snapshot_work,
++				     msecs_to_jiffies(boot_snapshot * 1000));
++}
++
+ static void mtdoops_notify_add(struct mtd_info *mtd)
+ {
+ 	struct mtdoops_context *cxt = &oops_cxt;
+@@ -340,6 +359,11 @@ static void mtdoops_notify_add(struct mtd_info *mtd)
+ 	cxt->oops_pages = (int)mtd->size / record_size;
+ 	find_next_position(cxt);
+ 	printk(KERN_INFO "mtdoops: Attached to MTD device %d\n", mtd->index);
++	if (boot_snapshot && boot_snapshot <= 300) {
++		dump_oops = 1;
++		schedule_delayed_work(&boot_snapshot_work,
++				     msecs_to_jiffies(boot_snapshot * 1000));
++	}
+ }
+ 
+ static void mtdoops_notify_remove(struct mtd_info *mtd)
+@@ -352,6 +376,7 @@ static void mtdoops_notify_remove(struct mtd_info *mtd)
+ 	if (kmsg_dump_unregister(&cxt->dump) < 0)
+ 		printk(KERN_WARNING "mtdoops: could not unregister kmsg_dumper\n");
+ 
++	cancel_delayed_work_sync(&boot_snapshot_work);
+ 	cxt->mtd = NULL;
+ 	flush_work(&cxt->work_erase);
+ 	flush_work(&cxt->work_write);
+diff --git a/init/Kconfig b/init/Kconfig
+index 75be22dc8..5453c1a64 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -2398,3 +2398,15 @@ config ARCH_HAS_SYSCALL_WRAPPER
+ 	def_bool n
+ 
+ source "init/Kconfig.gki"
++
++config ANDROID_NETBPFLOAD_COMPAT
++	bool "Android netbpfload version compatibility for backported BPF"
++	depends on ANDROID && BPF_SYSCALL && BPF_JIT
++	default n
++	help
++	  Report a 5.10 compatibility release only to netbpfload. This permits
++	  Android 17's version gate to reach the real BPF feature checks on
++	  this 5.4 tree with its 5.10 BPF backports. It does not upgrade Linux
++	  or add BPF functionality. Enable only with the matching backports
++	  and verify the ROM's BPF objects and device boot. Other callers
++	  continue to receive the kernel's real release.
+diff --git a/kernel/sys.c b/kernel/sys.c
+index fa3f48a51..63b96c309 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1247,6 +1247,17 @@ SYSCALL_DEFINE1(newuname, struct new_utsname __user *, name)
+ 	down_read(&uts_sem);
+ 	memcpy(&tmp, utsname(), sizeof(tmp));
+ 	up_read(&uts_sem);
++	if (IS_ENABLED(CONFIG_ANDROID_NETBPFLOAD_COMPAT)) {
++		char leader_comm[TASK_COMM_LEN];
++
++		get_task_comm(leader_comm, current->group_leader);
++		if (!strcmp(leader_comm, "netbpfload")) {
++			pr_info_once("lisa: netbpfload compatibility release 5.10.248; actual %s\n",
++				     tmp.release);
++			strscpy(tmp.release, "5.10.248", sizeof(tmp.release));
++		}
++	}
++
+ 	if (copy_to_user(name, &tmp, sizeof(tmp)))
+ 		return -EFAULT;
+ 
