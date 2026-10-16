@@ -1,0 +1,10 @@
+--- a/vendor/etc/selinux/vendor_file_contexts
++++ b/vendor/etc/selinux/vendor_file_contexts
+@@ -1037,3 +1037,6 @@
+ /vendor/bin/hw/android\.hardware\.biometrics\.fingerprint@2\.1-service\.fpc u:object_r:hal_fingerprint_default_exec:s0
+ /vendor/bin/hw/android\.hardware\.camera\.provider@2\.4-virtual-camera-service    u:object_r:hal_camera_default_exec:s0
+ /sys/devices/platform/soc/soc:qcom,svm_neuron_block/soc:qcom,svm_neuron_block:application/blk_name  u:object_r:vendor_sysfs_svm_neuron:s0
++
++# Lisa legacy ION allocator used by Qualcomm keymaster and TEE.
++/dev/ion    u:object_r:ion_device:s0
+
