@@ -12244,8 +12244,10 @@ BTF_SET_START(btf_non_sleepable_error_inject)
  * Assume non-sleepable from bpf safety point of view.
  */
 BTF_ID(func, __add_to_page_cache_locked)
+#ifdef CONFIG_FUNCTION_ERROR_INJECTION
 BTF_ID(func, should_fail_alloc_page)
 BTF_ID(func, should_failslab)
+#endif
 BTF_SET_END(btf_non_sleepable_error_inject)
 
 static int check_non_sleepable_error_inject(u32 btf_id)

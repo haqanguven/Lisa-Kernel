@@ -1,7 +1,16 @@
 diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
-index 1c4c1cf2c..40151663b 100644
+index 1c4c1cf2c..670c4852d 100644
 --- a/arch/arm64/kernel/head.S
 +++ b/arch/arm64/kernel/head.S
+@@ -72,7 +72,7 @@ _head:
+ 	b	stext				// branch to kernel start, magic
+ 	.long	0				// reserved
+ #endif
+-	.quad	0				// Image load offset from start of RAM, little-endian
++	.quad	0x80000				// Legacy Qualcomm bootloader Image load offset
+ 	le64sym	_kernel_size_le			// Effective size of kernel image, little-endian
+ 	le64sym	_kernel_flags_le		// Informative flags, little-endian
+ 	.quad	0				// reserved
 @@ -467,6 +467,7 @@ __primary_switched:
  ENDPROC(__primary_switched)
  
@@ -83,6 +92,21 @@ index 547d7968d..e97bc08aa 100644
 +	  or add BPF functionality. Enable only with the matching backports
 +	  and verify the ROM's BPF objects and device boot. Other callers
 +	  continue to receive the kernel's real release.
+diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
+index d467cd22e..92eaea79e 100644
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -12244,8 +12244,10 @@ BTF_SET_START(btf_non_sleepable_error_inject)
+  * Assume non-sleepable from bpf safety point of view.
+  */
+ BTF_ID(func, __add_to_page_cache_locked)
++#ifdef CONFIG_FUNCTION_ERROR_INJECTION
+ BTF_ID(func, should_fail_alloc_page)
+ BTF_ID(func, should_failslab)
++#endif
+ BTF_SET_END(btf_non_sleepable_error_inject)
+ 
+ static int check_non_sleepable_error_inject(u32 btf_id)
 diff --git a/kernel/sys.c b/kernel/sys.c
 index 66f5da167..33dd6b651 100644
 --- a/kernel/sys.c

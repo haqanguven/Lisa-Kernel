@@ -72,7 +72,7 @@ _head:
 	b	stext				// branch to kernel start, magic
 	.long	0				// reserved
 #endif
-	.quad	0				// Image load offset from start of RAM, little-endian
+	.quad	0x80000				// Legacy Qualcomm bootloader Image load offset
 	le64sym	_kernel_size_le			// Effective size of kernel image, little-endian
 	le64sym	_kernel_flags_le		// Informative flags, little-endian
 	.quad	0				// reserved
