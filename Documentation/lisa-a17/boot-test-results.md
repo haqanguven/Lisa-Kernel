@@ -43,3 +43,21 @@ working recovery. Its immediate purpose is to establish a booting source
 baseline before adding Android 17 compatibility changes. It is not an
 Android 17 release.
 
+
+## LiFESTEAL baseline verified on device
+
+On 2026-10-16 the related clean source above compiled and temporarily booted
+with the unchanged original TWRP ramdisk. ADB reported
+5.4.302-lisa-lifesteal-baseline+ and TWRP 3.7.1_12-Termux.
+The Image text_offset was 0x80000. Root integration, LTO and BTF were disabled;
+kimage_vaddr alignment was the only source change for this baseline.
+Recovery image SHA256: f07743a7f9f7ed5c5acdef3065ef2e310eb1acf42df131648346f79a35f09f87.
+
+The separate LiFESTEAL patch in patches/lifesteal-clean-a17.patch applies ONLY
+to AlphaDroid-devices/kernel_xiaomi_lisa commit
+b54fcd3c1c03b7d4fdb39ccb93b78f026202b123, not to the Meow tree in this branch.
+It adds the scoped netbpfload compatibility option after the baseline test.
+A temporary ROM boot with that option enabled produced a black screen,
+as reported by the user. Android boot has NOT been verified. BTF remained
+disabled; no claim of complete BPF or vendor module compatibility is made.
+No partitions were flashed. Awaiting return to recovery for current logs.

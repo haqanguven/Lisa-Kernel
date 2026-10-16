@@ -1,0 +1,54 @@
+diff --git a/arch/arm64/kernel/head.S b/arch/arm64/kernel/head.S
+index cc4184495..b35bd5377 100644
+--- a/arch/arm64/kernel/head.S
++++ b/arch/arm64/kernel/head.S
+@@ -471,6 +471,7 @@ __primary_switched:
+ ENDPROC(__primary_switched)
+ 
+ 	.pushsection ".rodata", "a"
++	.balign 8
+ SYM_DATA_START(kimage_vaddr)
+ 	.quad		_text - TEXT_OFFSET
+ SYM_DATA_END(kimage_vaddr)
+diff --git a/init/Kconfig b/init/Kconfig
+index 75be22dc8..5453c1a64 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -2398,3 +2398,15 @@ config ARCH_HAS_SYSCALL_WRAPPER
+ 	def_bool n
+ 
+ source "init/Kconfig.gki"
++
++config ANDROID_NETBPFLOAD_COMPAT
++	bool "Android netbpfload version compatibility for backported BPF"
++	depends on ANDROID && BPF_SYSCALL && BPF_JIT
++	default n
++	help
++	  Report a 5.10 compatibility release only to netbpfload. This permits
++	  Android 17's version gate to reach the real BPF feature checks on
++	  this 5.4 tree with its 5.10 BPF backports. It does not upgrade Linux
++	  or add BPF functionality. Enable only with the matching backports
++	  and verify the ROM's BPF objects and device boot. Other callers
++	  continue to receive the kernel's real release.
+diff --git a/kernel/sys.c b/kernel/sys.c
+index fa3f48a51..63b96c309 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -1247,6 +1247,17 @@ SYSCALL_DEFINE1(newuname, struct new_utsname __user *, name)
+ 	down_read(&uts_sem);
+ 	memcpy(&tmp, utsname(), sizeof(tmp));
+ 	up_read(&uts_sem);
++	if (IS_ENABLED(CONFIG_ANDROID_NETBPFLOAD_COMPAT)) {
++		char leader_comm[TASK_COMM_LEN];
++
++		get_task_comm(leader_comm, current->group_leader);
++		if (!strcmp(leader_comm, "netbpfload")) {
++			pr_info_once("lisa: netbpfload compatibility release 5.10.248; actual %s\n",
++				     tmp.release);
++			strscpy(tmp.release, "5.10.248", sizeof(tmp.release));
++		}
++	}
++
+ 	if (copy_to_user(name, &tmp, sizeof(tmp)))
+ 		return -EFAULT;
+ 
