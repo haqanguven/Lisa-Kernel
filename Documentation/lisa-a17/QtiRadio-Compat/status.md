@@ -1,3 +1,5 @@
+> User confirmation (2026-10-18): after enabling the MIUI 5G preference, the phone displays 5G. The current runtime reports `overrideNetwork=NR_NSA`, NR remains allowed and mobile data is connected. NR frequency/signal measurements are not exposed in the captured standard registry; actual NR bearer use, throughput and reboot persistence remain unverified. Call audio was confirmed before this system_ext trial; a post-trial call check remains pending.
+
 # QtiRadio compatibility trial — 2026-10-18
 
 Current state: user approved the trial; the prepared system_ext image was written and its readback SHA-256 matched. Android boot completed with the sound-working kernel; the two replacement file hashes match. NR status callbacks are now observed. 5G is **not yet verified**; the MIUI 5G preference was off again after reboot and a user-visible setting check is pending. PackageManager still reports cached version 37 despite the verified version-36 APK bytes; no package data or parser caches have been deleted. Full original system_ext backup is retained locally for rollback. No modem, EFS, NV, vbmeta or permanent boot writes.

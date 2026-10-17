@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-18",
+  "user_confirmed": "5G indicator visible after enabling MIUI 5G preference",
+  "runtime": {
+    "boot_completed": true,
+    "miui_fiveg_user_enable": 1,
+    "nr_allowed": true,
+    "telephony_display_override": "NR_NSA",
+    "data_connected": true,
+    "nr_frequency_range": 0
+  },
+  "limits": [
+    "NR bearer and throughput not independently verified",
+    "Reboot persistence not yet verified",
+    "Two-way call audio not yet retested after system_ext trial"
+  ],
+  "permanent_change": "system_ext_a only; complete original backup retained locally",
+  "kernel": "Temporary boot of audio-confirmed build #13"
+}
