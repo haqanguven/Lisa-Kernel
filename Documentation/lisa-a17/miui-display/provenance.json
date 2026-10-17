@@ -1,0 +1,10 @@
+{
+  "base_repo": "https://github.com/AlphaDroid-devices/kernel_xiaomi_lisa",
+  "base_commit": "b54fcd3c1c03b7d4fdb39ccb93b78f026202b123",
+  "display_repo": "https://github.com/MiCode/Xiaomi_Kernel_OpenSource",
+  "display_commit": "57ee2b068000ac79caa7c076d0d9bb1a9260e8a4",
+  "display_branch": "lisa-r-oss",
+  "integration": "official techpack/display overlay; retained baseline top Makefile/config for built-in linkage; official include/drm/mi_disp_notifier.h",
+  "note": "tracked patch excludes untracked new source files; official pinned source required; not standalone patch",
+  "validation": "Build and physical display boot verified; user then reported freezing/restart. UNSTABLE; restart cause pending logs."
+}

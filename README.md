@@ -1,4 +1,4 @@
-> Current device result (2026-10-17): Android boot flags were reached but the physical panel remained black and the phone later restarted. This is NOT a usable or stable boot. Digital capture showed a rendered lockscreen; panel output/power behavior remains unresolved. See [recovery findings](Documentation/lisa-a17/black-screen-recovery.md).
+> Current device result (2026-10-17): the official Lisa MIUI display stack restored physical lockscreen/home output, but the phone then froze/restarted. This is NOT a stable release. See [candidate source and findings](Documentation/lisa-a17/miui-display/first-visible-boot.md). Kernel remains temporary; vendor_a V2 remains persistent.
 
 # Lisa Kernel: experimental Android 17 compatibility
 
