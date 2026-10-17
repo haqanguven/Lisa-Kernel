@@ -1,0 +1,11 @@
+{
+  "kernel_release": "5.4.302-HyperOSPro",
+  "build_change": "Pass DYNAMIC_SINGLE_CHIP=qca6750 using supported qcacld Kbuild mechanism. Preserve LOCALVERSION= to suppress plus. No firmware content or vendor partition change.",
+  "failure_evidence": "Kernel requested wlan/qca_cld/WCNSS_qcom_cfg.ini whose ROM symlink targets missing /vendor/etc/wifi/WCNSS_qcom_cfg.ini. ROM supplies valid qca6750 subdirectory and config. Driver probe failed -1; HAL driver state write EINVAL.",
+  "compiled_check": "wlan_hdd_main.o contains wlan/qca_cld/qca6750/WCNSS_qcom_cfg.ini",
+  "boot_sha256": "0f6191a9a011f0915c62b721a7d3cd3b8c033a5a3b13e78e4e20cbce2d582cb9",
+  "base_commit": "b54fcd3c1c03b7d4fdb39ccb93b78f026202b123",
+  "display_commit": "57ee2b068000ac79caa7c076d0d9bb1a9260e8a4",
+  "toolchain_commit": "9fb011b183fe7e69b04b873ef6533b4b077e3c5e",
+  "test_status": "Temporary boot #10, boot_completed1, Wi-Fi HAL started, Wi-Fi enabled, wlan0 exists, scan returned13 records; HAL/wificond/supplicant setup failure counters zero. User connection/internet check pending."
+}

@@ -1,3 +1,5 @@
+> Latest Wi-Fi result (2026-10-17): `5.4.302-HyperOSPro` with the QCA6750 config-path selection starts Wi-Fi HAL, creates wlan0 and returns scan results; connection/internet and long-term stability remain pending. [Exact build inputs and findings](Documentation/lisa-a17/HyperOSPro-WiFi/wifi-fix.md).
+
 > Current device result (2026-10-17): the official Lisa MIUI display stack restored physical lockscreen/home output, but the phone then froze/restarted. This is NOT a stable release. See [candidate source and findings](Documentation/lisa-a17/miui-display/first-visible-boot.md). Kernel remains temporary; vendor_a V2 remains persistent.
 
 # Lisa Kernel: experimental Android 17 compatibility
