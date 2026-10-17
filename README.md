@@ -2,11 +2,15 @@
 
 Kernel work for Xiaomi 11 Lite 5G NE (`lisa`) and a HyperOS Android 17 port.
 
-**Experimental: no successful device boot has been verified.** The actual
+**Experimental: a LiFESTEAL-source temporary Android 17 boot completed on 2026-10-17. Stability and hardware validation remain pending.** The actual
 kernel remains Linux 5.4.302. Existing ROM modules have incompatible symbol
 CRCs and must not be treated as compatible replacement drivers.
 
-## Source and changes
+## Latest device result
+
+The completed boot uses a separate LiFESTEAL source plus vendor label fixes, not the Meow root source below. See [exact inputs and limitations](Documentation/lisa-a17/first-completed-boot.md). The kernel is still temporary; vendor_a v2 is persistent.
+
+## Earlier Meow source and changes
 
 The source is pinned to MeowKernel commit
 `240b4a2e8265ce2100024a4e94b596b35a2d6afe` from
