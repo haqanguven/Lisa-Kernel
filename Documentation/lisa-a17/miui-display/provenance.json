@@ -6,5 +6,6 @@
   "display_branch": "lisa-r-oss",
   "integration": "official techpack/display overlay; retained baseline top Makefile/config for built-in linkage; official include/drm/mi_disp_notifier.h",
   "note": "tracked patch excludes untracked new source files; official pinned source required; not standalone patch",
-  "validation": "Build and physical display boot verified; user then reported freezing/restart. UNSTABLE; restart cause pending logs."
+  "validation": "Build and physical display boot verified; user then reported freezing/restart. UNSTABLE; restart cause pending logs.",
+  "followup": "Second temporary boot user confirms lock/wake working; same kernel/framework >234s. Prior restart unexplained. Settings version parser fails; actual kernel verified. GNSS app crashes observed."
 }
