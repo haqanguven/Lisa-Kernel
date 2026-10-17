@@ -1,0 +1,13 @@
+{
+  "release": "5.4.302-HyperOSPro",
+  "base_source_commit": "b54fcd3c1c03b7d4fdb39ccb93b78f026202b123",
+  "display_source_commit": "57ee2b068000ac79caa7c076d0d9bb1a9260e8a4",
+  "toolchain_commit": "9fb011b183fe7e69b04b873ef6533b4b077e3c5e",
+  "wifi_build_option": "DYNAMIC_SINGLE_CHIP=qca6750",
+  "version_change": "CONFIG_MIUI_PROC_VERSION_COMPAT=y: proc compiler field explicitly says gcc-compatible driver, retaining complete real Proton Clang13 identification and trailing space. uname/kernel release and boot banner unchanged. No GCC version invented.",
+  "validation": "Temporary boot verified, boot_completed1; actual proc output matches extracted Settings GCC-specific regex; user confirms version now visible. Prior candidate Wi-Fi/internet user confirmed; same Wi-Fi change retained.",
+  "nr_status": "UNRESOLVED: user confirms carrier activation, coverage, same SIM on another phone, and prior Lisa ROM5G. NR allowed; modem accepts mode26 and returns NR bit in bitmap. New QtiTelephony AIDL-only client has mQtiRadio null on queryNrIconType; ODM declares QtiRadio HIDL2.6. Mismatch observed but not proven sole reason for lack of NR connection. No modem/EFS/carrier changes made.",
+  "performance": "Thermal status0, available RAM~4GB, instantaneous CPU~86% idle across8cores. Launcher frame timing and many audio/TEE/perf HAL errors observed; causal link not proven. Animation0.5 writes denied WRITE_SECURE_SETTINGS; values remain1.0/1.0/null, no permission granted.",
+  "boot_sha256": "d6f9ab03cc653ac6b48fbb7ec0d623c43ba426eed3a03a90626742d5613222f5",
+  "installation": "Temporary fastboot boot only; persistent vendor_a V2 from earlier authorization remains."
+}
