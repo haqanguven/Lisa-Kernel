@@ -1,3 +1,5 @@
+> Current device result (2026-10-17): Android boot flags were reached but the physical panel remained black and the phone later restarted. This is NOT a usable or stable boot. Digital capture showed a rendered lockscreen; panel output/power behavior remains unresolved. See [recovery findings](Documentation/lisa-a17/black-screen-recovery.md).
+
 # Lisa Kernel: experimental Android 17 compatibility
 
 Kernel work for Xiaomi 11 Lite 5G NE (`lisa`) and a HyperOS Android 17 port.
