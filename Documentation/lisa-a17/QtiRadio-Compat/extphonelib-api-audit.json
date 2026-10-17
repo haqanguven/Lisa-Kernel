@@ -1,0 +1,12 @@
+{
+  "candidate": "android16-reference\\QtiTelephony.apk",
+  "scope": "Referenced extphonelib method signatures only; not full runtime/API compatibility. AIDL asBinder is inherited from framework IInterface.",
+  "references_checked": 114,
+  "framework_inherited": [
+    "Lcom/qti/extphone/IExtPhoneCallback;->asBinder()Landroid/os/IBinder;"
+  ],
+  "missing": [],
+  "current_binder_methods_not_implemented_by_candidate": {
+    "Lcom/qti/phone/ExtTelephonyService$1;": []
+  }
+}

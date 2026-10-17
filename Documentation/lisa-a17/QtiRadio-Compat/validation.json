@@ -1,0 +1,10 @@
+{
+  "status": "FILESYSTEM_VALIDATED_NOT_INSTALLED",
+  "entries_verified": 2131,
+  "unexpected_changes": [],
+  "size": 782774272,
+  "partition_size": 826748928,
+  "sha256": "247e180690cc001fd9c3bec874055d9fbda31ce600febac8cfff35e134f43e5c",
+  "backup_sha256": "1abcf42f80768f3911d962b203b041d36ca0a82a85ea2c6e042c795898105db2",
+  "runtime_tested": false
+}

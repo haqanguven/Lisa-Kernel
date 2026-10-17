@@ -1,0 +1,15 @@
+# QtiRadio compatibility trial — 2026-10-18
+
+Current state: user approved the trial; the prepared system_ext image was written and its readback SHA-256 matched. Android boot completed with the sound-working kernel; the two replacement file hashes match. NR status callbacks are now observed. 5G is **not yet verified**; the MIUI 5G preference was off again after reboot and a user-visible setting check is pending. PackageManager still reports cached version 37 despite the verified version-36 APK bytes; no package data or parser caches have been deleted. Full original system_ext backup is retained locally for rollback. No modem, EFS, NV, vbmeta or permanent boot writes.
+
+The active ROM's QtiTelephony uses only QtiRadio AIDL while the Lisa ODM manifest declares QtiRadio HIDL 2.6. Earlier runtime queries failed with a null AIDL backend. This is a demonstrated compatibility mismatch, but not proof that it alone prevents NR attachment.
+
+The user network preference had excluded LTE/NR; restoring automatic NR/LTE made LTE data available but did not produce user-observed 5G. The network reported NR/ENDC availability without DCNR restriction, while no actual NR frequency was reported. A 5G icon alone will not count as validation.
+
+The candidate pairs an unchanged Xiaomi-signed Android 16 QtiTelephony with the current Android 17 extphonelib plus explicit unsupported-method fallbacks. APK source: TheMuppets/proprietary_vendor_xiaomi_sm8550-common, lineage-23.2 commit `0c9140245d91660b96dfd80667e7b018d73c2850`. This is a reference from another Xiaomi family, not the user's previous ROM. APK SHA-256: `58906a6e238b0ea95cd26039ebf3ffa81414505a0c39e761b1a045d700650d9d`. V2/V3 signatures verify; signer certificate matches the installed Xiaomi APK. No APK resigning or signature bypass.
+
+The framework fallback adds 12 concrete inherited methods for Android 17 calls and one legacy callback default. Each unsupported call explicitly throws RemoteException rather than reporting false success. Existing Binder transaction tables remain intact. Static checks resolve 114 extphone references and find no missing required inherited Binder methods; this does not certify runtime behavior or hidden API compatibility.
+
+The EROFS candidate changes only `priv-app/QtiTelephony/QtiTelephony.apk` and `framework/extphonelib.jar`. All 2131 entries were checked for content, mode, ownership, mtime, symlinks and xattrs; no unexpected differences. Compatible EROFS feature set and UUID retained. Image 782774272 bytes within the existing 826748928-byte logical partition. SHA-256: `247e180690cc001fd9c3bec874055d9fbda31ce600febac8cfff35e134f43e5c`; device readback matched after writing only system_ext_a.
+
+Rollback is the complete original partition image, verified against the device before modification, followed by temporary boot of the confirmed audio kernel. If the trial fails, restore that backup without formatting data or bypassing APK checks. Raw logs, proprietary APK/JAR files, full ROM images and backups remain local.

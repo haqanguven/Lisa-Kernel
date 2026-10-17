@@ -1,0 +1,20 @@
+{
+  "base_commit": "b54fcd3c1c03b7d4fdb39ccb93b78f026202b123",
+  "official_lisa_commit": "57ee2b068000ac79caa7c076d0d9bb1a9260e8a4",
+  "official_files": [
+    "techpack/audio/asoc/msm-dai-q6-v2.c",
+    "techpack/audio/asoc/msm-dai-q6-v2.h",
+    "techpack/audio/asoc/msm_dailink.h"
+  ],
+  "local_adjustment": "Rename static num_of_bits_set helper to lisa_mi2s_num_of_bits_set to avoid external declaration conflict.",
+  "release": "5.4.302-HyperOSPro",
+  "build": 13,
+  "validation": "Build successful; temporary Android boot completed; soundcard and PCM devices registered; playback HAL active. Physical two-way call audio awaiting user confirmation.",
+  "deployment": "Temporary fastboot boot only; no permanent boot flash.",
+  "sha256": {
+    "boot-HyperOSPro-audio-v2.img": "76ecd280d195438e39d4f2e831da6711f56b077e2ffe87d900518c66cc1f2e3a",
+    "Image-v2": "331e49a397a6921eca15dbf25b7d23f880ca11c42a1f9f74c2d565c47b0d19d8",
+    "lisa-mi2s-v2.patch": "527af9e1fd09f5be1c42f349c13ae027f68d35755e70c76d31e55485d90ec84d",
+    "kernel.config": "e162861daeda5442d248cd698f9f4ffb79a82bddcc963951947a009099d4c00c"
+  }
+}

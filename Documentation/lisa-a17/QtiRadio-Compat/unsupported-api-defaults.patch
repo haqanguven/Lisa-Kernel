@@ -1,0 +1,181 @@
+--- original/IExtPhone$Stub.smali
++++ compat/IExtPhone$Stub.smali
+@@ -3883,3 +3883,159 @@
+         :pswitch_15
+     .end packed-switch
+ .end method
++
++.method public getAuxiliaryRadioIconInfo(Lcom/qti/extphone/Client;)Lcom/qti/extphone/Token;
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
++
++.method public getDualDataRecommendation(Ljava/lang/String;)Lcom/qti/extphone/DualDataRecommendation;
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
++
++.method public isMmsUnrestrictedByTrafficProtection(I)Z
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
++
++.method public queryRadioIcon(ILcom/qti/extphone/Client;)Lcom/qti/extphone/Token;
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
++
++.method public registerForMmsPdnImmediateRetry(ILandroid/app/PendingIntent;)V
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
++
++.method public sendDataStallStatus(ILcom/qti/extphone/Client;Lcom/qti/extphone/DataStallInfo;)Lcom/qti/extphone/Token;
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
++
++.method public setDataPriorityPreference(Lcom/qti/extphone/Client;Lcom/qti/extphone/DataPriorityPreference;)Lcom/qti/extphone/Token;
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
++
++.method public setNbTnPreference(ILcom/qti/extphone/Client;Z)Lcom/qti/extphone/Token;
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
++
++.method public setNr5gNtnPreference(ILcom/qti/extphone/Nr5gNtnMode;Lcom/qti/extphone/Client;)Lcom/qti/extphone/Token;
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
++
++.method public setTurboDsdaPreference(Lcom/qti/extphone/Client;Lcom/qti/extphone/TurboDsdaPreference;)Lcom/qti/extphone/Token;
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
++
++.method public switchMultiSimConfig(I)V
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
++
++.method public unregisterForMmsPdnImmediateRetry(ILandroid/app/PendingIntent;)V
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
+--- original/IExtPhoneCallback.smali
++++ compat/IExtPhoneCallback.smali
+@@ -536,3 +536,16 @@
+         }
+     .end annotation
+ .end method
++
++.method public sendCdmaSmsResponse(ILcom/qti/extphone/Token;Lcom/qti/extphone/Status;Lcom/qti/extphone/SmsResult;)V
++    .locals 2
++
++    .annotation system Ldalvik/annotation/Throws;
++        value = {Landroid/os/RemoteException;}
++    .end annotation
++
++    new-instance v0, Landroid/os/RemoteException;
++    const-string v1, "Unsupported by legacy QtiRadio HIDL compatibility backend"
++    invoke-direct {v0, v1}, Landroid/os/RemoteException;-><init>(Ljava/lang/String;)V
++    throw v0
++.end method
