@@ -1,0 +1,12 @@
+{
+  "install_upgrade.bat": {
+    "flash_commands_unchanged": true,
+    "stop_on_every_fastboot_error": true,
+    "erase_commands": 0
+  },
+  "install_and_format_data.bat": {
+    "flash_commands_unchanged": true,
+    "stop_on_every_fastboot_error": true,
+    "erase_commands": 2
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "boot_sha256": "76ecd280d195438e39d4f2e831da6711f56b077e2ffe87d900518c66cc1f2e3a",
+  "patched_super_sha256": "d3a1cc0c240627d0d9a2c34dda76b3392db9f5900a5970c3c9f88a9be87286d8",
+  "vendor_sha256": "e147bd27e5f26c95377ffd9c7230e1220d518e611b7434ff8376b98186ddaf6b",
+  "other_super_bytes_unchanged": true,
+  "five_g_fixed": false,
+  "original_super_preserved": "Orijinal-Dosyalar-20261018/super.img",
+  "installer_target": "images/super.img"
+}

@@ -1,0 +1,10 @@
+{
+  "status": "VERIFIED_NOT_DEVICE_FLASHED",
+  "vendor_sha256": "e147bd27e5f26c95377ffd9c7230e1220d518e611b7434ff8376b98186ddaf6b",
+  "unchanged_outside_vendor": true,
+  "metadata_unchanged": true,
+  "expanded_bytes": 9126805504,
+  "output_bytes": 7153407456,
+  "sparse_sha256": "d3a1cc0c240627d0d9a2c34dda76b3392db9f5900a5970c3c9f88a9be87286d8",
+  "independent_validation": "Android libsparse simg2img 34.0.5: expanded size and vendor SHA256 verified"
+}

@@ -1,0 +1,11 @@
+# ROM package integration — 2026-10-18
+
+The test ROM installer flashes both boot_ab and the complete super image. That replaces earlier boot/vendor repairs. The current package boot.img already matches the confirmed #13 kernel; super.img still contained incorrect graphics labels, which reproduced SurfaceFlinger EGL failures.
+
+The original super image was retained under Orijinal-Dosyalar-20261018/super.img. Its replacement patches only the vendor_a extent prefix with the verified V2 vendor filesystem. No partition metadata, allocation, system/system_ext/product/ODM contents, or bytes outside that prefix changed. The format reader checks both geometry and all primary/backup metadata checksums and rejects inconsistent metadata or overlapping extents. Output Android sparse image SHA-256 is d3a1cc0c240627d0d9a2c34dda76b3392db9f5900a5970c3c9f88a9be87286d8, 7153407456 bytes, expanded 9126805504 bytes. Vendor SHA-256 is e147bd27e5f26c95377ffd9c7230e1220d518e611b7434ff8376b98186ddaf6b.
+
+Verification compares all expanded bytes outside the replacement to the original and checks the replacement against vendor V2. An independent Android libsparse simg2img 34.0.5 conversion succeeded and its raw vendor extent hash matched V2. Metadata format reference: https://android.googlesource.com/platform/system/core/+/refs/heads/main/fs_mgr/liblp/include/liblp/metadata_format.h . No proprietary ROM binaries are stored here.
+
+Both original installer scripts were backed up. Changes quote the working directory, group early IF/PAUSE/EXIT commands correctly, check every image exists and verify boot/super hashes before any write, then stop after each failed fastboot command. The complete original fastboot command inventory remains unchanged: upgrade has zero erase commands; the explicitly formatting installer retains its two erases. Both now use the corrected standard images/super.img. Hashes bind installers to this exact package.
+
+On the device, the verified vendor V2 was restored and the already-correct permanent boot_a retained. Android boot completed with 5.4.302-HyperOSPro and correct graphics labels. Full ROM installer execution was NOT performed: device boot/vendor checks and offline super validation are the current evidence. Actual 5G remains unresolved.
