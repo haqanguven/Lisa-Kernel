@@ -1,3 +1,5 @@
+> Boot repair confirmed (2026-10-18): the working #13 kernel is now permanently installed in boot_a, vendor V2 labels are restored, and **two normal reboots completed**. Earlier temporary-kernel notes are historical. [Repair checks and exact hashes](Documentation/lisa-a17/persistent-boot-repair.md). 5G remains unresolved.
+
 > Latest validated baseline (2026-10-18): the user confirms SMS send/receive and mobile internet work in NR/LTE automatic mode with working IMS and restored vendor V2; the phone still shows LTE/4.5G. A QtiRadio legacy-client retry exposed a Xiaomi MiRadioProxy result-type ABI mismatch and was rolled back. **5G remains unresolved.** [Exact findings and new rollback baseline](Documentation/lisa-a17/QtiRadio-Compat/working-ims-qti-retry.md).
 
 > Latest SMS result (2026-10-18): calls work, but the IMS-only trial did not fix sending/receiving SMS on LTE/NR. Incoming SMS works in a user-confirmed 3G test. Trial changes were rolled back to original file contents with package timestamps refreshed for normal rescanning. 5G and LTE SMS remain unresolved. [Detailed trial and rollback](Documentation/lisa-a17/QtiRadio-Compat/ims-sms-result.md).
