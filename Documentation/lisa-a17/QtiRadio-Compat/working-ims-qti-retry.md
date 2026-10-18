@@ -1,0 +1,11 @@
+# Working IMS baseline and QtiRadio retry — 2026-10-18
+
+After vendor V2 restoration, the current IMS APK exactly matches the Xiaomi-signed Android 16 reference (SHA-256 56f103215b1aa301e65b6ecde29bb67318cba07f3f3d91d2196372fd14d44172). Main MMTEL service is READY. Enabling NR/LTE automatic mode produced IMS registration with voice/video/UT/SMS capabilities. The user confirmed SMS sending and receiving and LTE mobile internet work. User-observed network remains LTE/4.5G; actual 5G is not established.
+
+The current system_ext logical partition is 827138048 bytes, different from the earlier baseline. A new complete backup was pulled and hash-verified against the device: 9d947da44b9ec0a52b63a5cc75227ab69b7ffdfe64526b4ef574dcccb0f504e7. This is the recovery baseline for current work; older backups must not be substituted blindly.
+
+A controlled retry of the previously approved QtiTelephony Android 16 + extphonelib fallback pair preserved this working IMS file and metadata exactly. All 2136 expected filesystem entries matched. Correct current timestamps caused PackageManager to read version 36, target 35. Android boot completed, but the client then crashed with ClassCastException: com.xiaomi.internal.telephony_ext.MiRadioProxy$Result cannot be cast to com.qti.phone.QtiRadioProxy$Result (WorkerHandler). Therefore the earlier shared-library method audit was insufficient: Xiaomi's radio extension also has a runtime object-type ABI dependency. This retry is FAILED and must not be promoted as a fix.
+
+Rollback restores ALL file contents and metadata from the new SMS-working baseline, except current build mtimes for QtiTelephony.apk and its package directory to force normal package parsing. IMS remains exact. Verified rollback image size 782172160, SHA-256 e12992edfa372fffd11aa86a6714cd4fa36fffb17d729a17b990663d1afacd59; device readback matches. Sound-confirmed kernel build #13 is temporarily booting. Post-rollback IMS checks remain pending when this record was written.
+
+The remaining solution must address the matching Xiaomi radio-extension ABI or provide a compatible transport bridge. Repeating older APK substitutions without that compatibility check is not supported by this evidence. No modem/EFS/NV/vbmeta/data resets or permanent boot writes; private logs and ROM images remain local.
