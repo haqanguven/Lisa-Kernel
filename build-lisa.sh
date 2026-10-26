@@ -16,6 +16,8 @@ fi
 # Keep BTF, but avoid LTO's large merged debug units on memory-limited hosts.
 "$ROOT/scripts/config" --file "$OUTPUT/.config" \
     --disable LTO_CLANG --disable THINLTO --enable LTO_NONE
+# Use the release label verified on the Lisa Android 17 build.
+"$ROOT/scripts/config" --file "$OUTPUT/.config" --set-str LOCALVERSION "-A17-HyperOSPro"
 ARGS=( -C "$ROOT" O="$OUTPUT" ARCH=arm64
     CC="$CLANG_BIN/clang" LD="$CLANG_BIN/ld.lld"
     AR="$CLANG_BIN/llvm-ar" NM="$CLANG_BIN/llvm-nm"
