@@ -2,9 +2,10 @@
 
 Kernel work for Xiaomi 11 Lite 5G NE (`lisa`) and a HyperOS Android 17 port.
 
-**Experimental: no successful device boot has been verified.** The actual
-kernel remains Linux 5.4.302. Existing ROM modules have incompatible symbol
-CRCs and must not be treated as compatible replacement drivers.
+**Experimental: this kernel has booted on Lisa with the HyperOSPro Android 17 port.**
+That single-device boot does not establish full-ROM stability. The kernel
+remains Linux 5.4.302. Existing ROM modules have incompatible symbol CRCs and
+must not be treated as compatible replacement drivers.
 
 ## Source and changes
 
@@ -53,6 +54,14 @@ toolchain used for the local compilation.
 The workflow uploads Image, built modules, configuration, Module.symvers, and
 build logs as artifacts. It does not upload device backups or private logs,
 flash a device, or publish a boot-tested release.
+
+A separate device test verified the vendor policy adjustments required for
+MiSound and vibration on the Android 17 Lisa port. These are vendor_a policy
+changes, not kernel changes. See
+[the device test notes](Documentation/devices/lisa-android17-vendor-policy.md)
+and [the vendor policy patch](patches/lisa-a17-hyperospro-vendor-policy.patch).
+The tested 1.36 GB vendor_a image is kept outside the repository; the notes
+include its SHA-256.
 
 `tools/pack-experimental-boot.py` can repack a local original boot v3 image with
 Image while preserving its ramdisk. Its output is unsigned and requires AVB,
