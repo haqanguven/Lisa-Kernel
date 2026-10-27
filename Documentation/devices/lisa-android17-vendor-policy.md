@@ -20,7 +20,7 @@ source or boot image change was needed.
   both permissions were denied, so vibration requests failed in dispatch.
 
 The exact additions are in
-[`patches/lisa-a17-hyperospro-vendor-policy.patch`](../patches/lisa-a17-hyperospro-vendor-policy.patch).
+[`patches/lisa-a17-hyperospro-vendor-policy.patch`](../../patches/lisa-a17-hyperospro-vendor-policy.patch).
 Apply them to the matching extracted `vendor_a` tree. Property contexts used
 when rebuilding the image must include the platform, system_ext, product, and
 vendor context rules so existing SELinux labels are retained.
