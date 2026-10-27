@@ -1,0 +1,21 @@
+From: Lisa Android 17 HyperOSPro device test
+Subject: [PATCH] lisa: fix Android 17 vendor audio and vibrator policy
+
+Apply to the extracted Lisa vendor_a tree used with the tested HyperOSPro
+Android 17 build. The first rule exposes only the effect-selector property.
+The CIL rule permits call and transfer between the two vibrator HAL processes
+that share hal_vibrator_default.
+
+--- a/etc/selinux/vendor_property_contexts
++++ b/etc/selinux/vendor_property_contexts
+@@ -81,1 +81,2 @@
++ro.vendor.audio.soundfx.type u:object_r:vendor_exported_system_prop:s0
+ ro.vendor.audio.           u:object_r:vendor_audio_prop:s0
+
+--- a/etc/selinux/vendor_sepolicy.cil
++++ b/etc/selinux/vendor_sepolicy.cil
+@@ -11462,3 +11462,4 @@
+ (typeattributeset base_typeattr_543_30_0 ((and (domain) ((not (vndservicemanager_30_0))))))
+ (typeattribute base_typeattr_542_30_0)
+ (typeattributeset base_typeattr_542_30_0 ((and (domain) ((not (coredomain init_30_0 vendor_init_30_0))))))
++(allow hal_vibrator_default hal_vibrator_default (binder (call transfer)))
